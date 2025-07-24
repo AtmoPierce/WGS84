@@ -1,5 +1,4 @@
-use nalgebra::{ComplexField, Matrix3x1, Matrix3};
-
+use matrslab::math::{Vector, Matrix};
 use crate::{constants::constants::{a, b, e2, g_e, k, w, E, GM}, transforms::transforms::ecef_to_geocentric_ferrari};
 
 pub fn gravity_normal(latitude: f64)->f64{
@@ -25,7 +24,7 @@ fn ellipsoidal_w(u: f64, beta: f64)->f64{
     return ellip_w;
 }
 
-pub fn gravity_ellipsoidal(x: f64, y:f64, z: f64)->Matrix3x1<f64>{
+pub fn gravity_ellipsoidal(x: f64, y:f64, z: f64)->Vector<f64, 3>{
     let u = ellipsoidal_height(x, y, z);
     let beta = ellipsoidal_beta(x, y, z, u);
     let ellip_w = ellipsoidal_w(u, beta);
@@ -43,9 +42,9 @@ pub fn gravity_ellipsoidal(x: f64, y:f64, z: f64)->Matrix3x1<f64>{
     let g_u = -1.0 / ellip_w * ((GM/(u.powf(2.0)+E.powf(2.0))) + (w.powf(2.0)*a.powf(2.0)*E)/(u.powf(2.0)+E.powf(2.0))*(qprime/q_0)*(0.5 * beta.sin().sin()-1.0/6.0)) + 1.0 / ellip_w * w.powf(2.0)*u*beta.cos().cos(); 
     let g_b = 1.0 / ellip_w * (w.powf(2.0)*a.powf(2.0)/(u.powf(2.0)+E.powf(2.0))) * q / q_0 * beta.sin()*beta.cos() - 1.0 / ellip_w * w.powf(2.0) * (u.powf(2.0)+E.powf(2.0)).sqrt() * beta.sin()*beta.cos();
     let g_l = 0.0;
-    return Matrix3x1::new(g_u, g_b, g_l);
+    return Vector::new([g_u, g_b, g_l]);
 }
-pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Matrix3x1<f64>{
+pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Vector<f64, 3>{
     let u = ellipsoidal_height(x, y, z);
     let beta = ellipsoidal_beta(x, y, z, u);
     let ellip_w = ellipsoidal_w(u, beta);
@@ -65,10 +64,10 @@ pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Matrix3x1<f64>{
     let m31 = 1.0/ellip_w * beta.sin();
     let m32 = low;
     let m33 = 0.0;
-    let r1 = Matrix3::new(
-        m11, m12, m13,
-        m21, m22, m23,
-        m31, m32, m33
+    let r1 = Matrix::new(
+        [[m11, m12, m13],
+        [m21, m22, m23],
+        [m31, m32, m33]]
     );
     let g_rect = r1 * g_ellip;
     return g_rect;

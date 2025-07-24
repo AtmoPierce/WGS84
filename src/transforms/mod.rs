@@ -1,16 +1,16 @@
 pub mod transforms{
-    use nalgebra::{RealField, ComplexField, Matrix3x1};
+    use matrslab::{math::{Vector, Matrix}};
     use crate::constants::constants::{GM, g_e, b, k, e2, E, w, a};
     
-    pub fn geocentric_to_ecef(latitude: f64, longitude: f64, altitude: f64)->Matrix3x1<f64>{
+    pub fn geocentric_to_ecef(latitude: f64, longitude: f64, altitude: f64)->Vector<f64, 3>{
         let n = a / (1.0 - e2 * latitude.sin() * latitude.sin()).sqrt();
         let x = (n + altitude) * latitude.cos() * longitude.cos();
         let y = (n + altitude) * latitude.cos() * longitude.sin();
         let z = (n*(1.0-e2) + altitude)*latitude.sin();
-        return Matrix3x1::new(x,y,z);
+        return Vector::new([x,y,z]);
     }
 
-    pub fn ecef_to_geocentric_ferrari(x: f64, y: f64, z: f64) -> Matrix3x1<f64>{
+    pub fn ecef_to_geocentric_ferrari(x: f64, y: f64, z: f64) -> Vector<f64, 3>{
         let a2  = a*a;
         let b2  = b*b;
         let f   = (a-b)/a;
@@ -45,10 +45,10 @@ pub mod transforms{
         let altitude = u * (1.0 - (b2 / (a * v)));
         let latitude = (z+ep*ep*z0).atan2(r);
         let longitude = y.atan2(x);
-        return Matrix3x1::new(latitude, longitude, altitude);
+        return Vector::new([latitude, longitude, altitude]);
     }
 
-    pub fn ecef_to_geocentric(x: f64, y: f64, z: f64) -> Matrix3x1<f64> {
+    pub fn ecef_to_geocentric(x: f64, y: f64, z: f64) -> Vector<f64, 3> {
         // Compute intermediate quantities
         let eps = f64::EPSILON * 1.0e2;
         let rho2 = x * x + y * y;
@@ -79,7 +79,7 @@ pub mod transforms{
             let lat = zdz.atan2(rho2.sqrt());
             let alt = (rho2 + zdz * zdz).sqrt() - N;
         
-            return Matrix3x1::new(lat, lon, alt)                       
+            return Vector::new([lat, lon, alt])                       
         }
         else{
             let zdz = z + dz;
@@ -87,7 +87,7 @@ pub mod transforms{
             let lat = zdz.atan2(rho2.sqrt());
             let alt = (rho2 + zdz * zdz).sqrt() - N;
         
-            return Matrix3x1::new(lat, lon, alt)           
+            return Vector::new([lat, lon, alt])           
         }
     }
 }

@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-nalgebra = { version = "*", default-features = false, features = [ "libm-force" ] }
 libm = {version = "*"}
+matrslab = {version = "*", git="ssh://github.com/AtmoPierce/matrslab.git"}
