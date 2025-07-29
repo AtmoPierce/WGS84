@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 libm = {version = "*"}
-matrslab = {version = "*", git="ssh://github.com/AtmoPierce/matrslab.git"}
+matrslab = {version = "*", path="../matrslab"}

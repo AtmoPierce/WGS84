@@ -1,13 +1,14 @@
 pub mod transforms{
-    use matrslab::{math::{Vector, Matrix}};
+    use core::marker::PhantomData;
+    use matrslab::{coordinate::Cartesian, math::{Matrix, Vector}, reference_frame::ITRF};
     use crate::constants::constants::{GM, g_e, b, k, e2, E, w, a};
     
-    pub fn geocentric_to_ecef(latitude: f64, longitude: f64, altitude: f64)->Vector<f64, 3>{
+    pub fn geocentric_to_ecef(latitude: f64, longitude: f64, altitude: f64)->Cartesian<f64, ITRF>{
         let n = a / (1.0 - e2 * latitude.sin() * latitude.sin()).sqrt();
         let x = (n + altitude) * latitude.cos() * longitude.cos();
         let y = (n + altitude) * latitude.cos() * longitude.sin();
         let z = (n*(1.0-e2) + altitude)*latitude.sin();
-        return Vector::new([x,y,z]);
+        return Cartesian{data: Vector::new([x,y,z]), _reference_frame: PhantomData::<ITRF>};
     }
 
     pub fn ecef_to_geocentric_ferrari(x: f64, y: f64, z: f64) -> Vector<f64, 3>{

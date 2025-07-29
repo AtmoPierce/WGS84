@@ -17,7 +17,6 @@ checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
 [[package]]
 name = "matrslab"
 version = "0.1.0"
-source = "git+ssh://github.com/AtmoPierce/matrslab.git#567482b03339823abea8e0156a13f58cb3aedaec"
 dependencies = [
  "num-traits",
 ]

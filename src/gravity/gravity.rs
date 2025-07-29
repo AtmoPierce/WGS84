@@ -1,4 +1,5 @@
-use matrslab::math::{Vector, Matrix};
+use core::marker::PhantomData;
+use matrslab::{coordinate::{coordinate::Coordinate, Cartesian}, math::{Matrix, Vector}, reference_frame::ITRF};
 use crate::{constants::constants::{a, b, e2, g_e, k, w, E, GM}, transforms::transforms::ecef_to_geocentric_ferrari};
 
 pub fn gravity_normal(latitude: f64)->f64{
@@ -44,7 +45,7 @@ pub fn gravity_ellipsoidal(x: f64, y:f64, z: f64)->Vector<f64, 3>{
     let g_l = 0.0;
     return Vector::new([g_u, g_b, g_l]);
 }
-pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Vector<f64, 3>{
+pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Cartesian<f64, ITRF>{
     let u = ellipsoidal_height(x, y, z);
     let beta = ellipsoidal_beta(x, y, z, u);
     let ellip_w = ellipsoidal_w(u, beta);
@@ -70,5 +71,5 @@ pub fn gravity_rectangular(x: f64, y: f64, z: f64)->Vector<f64, 3>{
         [m31, m32, m33]]
     );
     let g_rect = r1 * g_ellip;
-    return g_rect;
+    return Cartesian{data: g_rect, _reference_frame: PhantomData::<ITRF>};
 }                                                                                                                                                                    
